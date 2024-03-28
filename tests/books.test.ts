@@ -1,5 +1,14 @@
 const request = require("supertest");
 const app = require("../src/app");
+const { connect, disconnect } = require('../src/db/db');
+
+beforeAll(async () => {
+  await connect();
+});
+
+afterAll(async () => {
+  await disconnect();
+});
 
 describe("GET /books", () => {
   it("should return status 200", async () => {
