@@ -1,4 +1,3 @@
-const books = require("../data/books");
 const { Book } = require("../models/book.model");
 
 async function getAllBooks(page, limit) {

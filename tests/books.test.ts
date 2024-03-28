@@ -1,8 +1,6 @@
 const request = require("supertest");
 const app = require("../src/app");
 
-const expectedData = require("../src/data/books")
-
 describe("GET /books", () => {
   it("should return status 200", async () => {
     const response = await request(app).get("/books");
