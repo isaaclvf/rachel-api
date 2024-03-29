@@ -9,8 +9,8 @@ async function getAllLoans(page, limit) {
     return await Loan.find();
 }
 
-async function createLoan({idUser, idBook, loanDate, returnDate, status}){
-    const newLoan = new Loan({idUser, idBook, loanDate, returnDate, status});
+async function createLoan({id, idUser, idBook, loanDate, returnDate, status}){
+    const newLoan = new Loan({id, idUser, idBook, loanDate, returnDate, status});
     return await newLoan.save();
 }
 

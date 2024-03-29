@@ -5,6 +5,7 @@ const usersSchema = new mongoose.Schema({
     registration: String,
     completeName: String,
     email: String,
+    type: String,
     password: String
 });
 
