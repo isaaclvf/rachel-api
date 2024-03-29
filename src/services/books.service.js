@@ -4,8 +4,8 @@ async function getAllBooks(page, limit) {
   return await Book.find();
 }
 
-async function createBook({ title, author }) {
-  const newBook = new Book({ title, author });
+async function createBook({ title, author, edition, ispn, status }) {
+  const newBook = new Book({ title, author, edition, ispn, status });
   return await newBook.save();
 }
 
