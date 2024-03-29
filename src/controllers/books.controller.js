@@ -21,4 +21,15 @@ booksRouter.post("/", async (req, res) => {
   }
 });
 
+booksRouter.put("/:id", async(req, res) =>{
+   const id = req.params.id;
+    const{title, author} = req.body;
+    try{
+      const updatedBook = await booksService.updateBook({id, updatesDados: {title, author}});
+        res.status(200).json(updatedBook);
+    } catch(error){
+        res.status(500).json({message: error.message});
+    }
+})
+
 module.exports = booksRouter;

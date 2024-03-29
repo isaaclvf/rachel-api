@@ -9,7 +9,16 @@ async function createBook({ title, author }) {
   return await newBook.save();
 }
 
+async function updateBook({id, updatesDados}){
+  const Books = await Book.findByIdAndUpdate({_id: id}, updatesDados, {new: true});
+  if(!Books){
+    throw new Error('Livro não encontrado');
+  }
+  return Books;
+}
+
 module.exports = {
   getAllBooks,
   createBook,
+  updateBook,
 };
