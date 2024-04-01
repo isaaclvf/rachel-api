@@ -20,7 +20,7 @@ async function updateBook({id, updatesDados}){
 async function deleteBook({id}){
   const book = await Book.findByIdAndDelete(id);
   if(!book){
-    throw new Error('Livro não encontrado');
+    throw new Error('Não tem Livro');
   }
   return book;
 }
