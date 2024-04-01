@@ -32,4 +32,14 @@ booksRouter.put("/:id", async(req, res) =>{
     }
 })
 
+booksRouter.delete("/:id", async(req, res) =>{
+  const id  = req.params.id;
+  try{
+    await booksService.deleteBook(id);
+    res.status(200).json({ message: "Livro excluído com sucesso" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = booksRouter;

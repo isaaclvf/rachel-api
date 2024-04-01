@@ -17,8 +17,17 @@ async function updateBook({id, updatesDados}){
   return Books;
 }
 
+async function deleteBook({id}){
+  const book = await Book.findByIdAndDelete(id);
+  if(!book){
+    throw new Error('Livro não encontrado');
+  }
+  return book;
+}
+
 module.exports = {
   getAllBooks,
   createBook,
   updateBook,
+  deleteBook,
 };
