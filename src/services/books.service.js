@@ -1,32 +1,105 @@
 const { Book } = require("../models/book.model");
 
 async function getAllBooks(page, limit) {
-  return await Book.find();
+  const books = await Book.find()
+    .skip((page - 1) * limit)
+    .limit(limit);
+  return books;
 }
 
-async function createBook({ title, author, edition, ispn, status }) {
-  const newBook = new Book({ title, author, edition, ispn, status });
-  return await newBook.save();
-}
-
-async function updateBook({id, updatesDados}){
-  const Books = await Book.findByIdAndUpdate({_id: id}, updatesDados, {new: true});
-  if(!Books){
-    throw new Error('Livro não encontrado');
-  }
-  return Books;
-}
-
-async function deleteBook({id}){
-  const book = await Book.findByIdAndDelete(id);
-  if(!book){
-    throw new Error('Não tem Livro');
+async function getBookById(id) {
+  const book = await Book.findById(id);
+  if (!book) {
+    throw new Error("book not found");
   }
   return book;
 }
 
+async function getBookByISBN(isbn) {
+  const book = await Book.find({ isbn });
+  return book;
+}
+
+async function getBooksByAuthor(author) {
+  const books = await Book.find({ author });
+  return books;
+}
+
+async function getBooksByTitle(title) {
+  const books = await Book.find({ title });
+  return books;
+}
+
+async function getBooksByStatus(status) {
+  const books = await Book.find({ status });
+  return books;
+}
+
+async function searchBooks(query) {
+  const books = await Book.find({
+    $or: [
+      { title: { $regex: query, $options: "i" } },
+      { author: { $regex: query, $options: "i" } },
+      { isbn: { $regex: query, $options: "i" } },
+    ],
+  });
+  return books;
+}
+
+async function createBook({ title, author, edition, isbn, status }) {
+  // Validate input data
+  if (!title || !author || !edition || !isbn || !status) {
+    throw new Error("missing required fields");
+  }
+
+  // Check if the book already exists
+  const existingBook = await Book.findOne({ isbn });
+  if (existingBook) {
+    throw new Error("book already exists");
+  }
+
+  // Create and save the new book
+  const newBook = new Book({ title, author, edition, isbn, status });
+  const savedBook = await newBook.save();
+  return savedBook;
+}
+
+async function updateBook({ id, updates }) {
+  // Validate input data
+  if (!id || !updates) {
+    throw new Error("missing required fields");
+  }
+
+  // Check if the book exists
+  const existingBook = await Book.findById(id);
+  if (!existingBook) {
+    throw new Error("book not found");
+  }
+
+  // Update and save the book
+  const updatedBook = await Book.findByIdAndUpdate(id, updates, {
+    new: true,
+    runValidators: true,
+  });
+  return updatedBook;
+}
+
+async function deleteBook({ id }) {
+  const deletedBook = await Book.findByIdAndDelete(id);
+  if (!deletedBook) {
+    throw new Error("book not found");
+  }
+  return deletedBook;
+}
+
 module.exports = {
   getAllBooks,
+  getBookById,
+  getBookByISBN,
+  getBooksByAuthor,
+  getBooksByStatus,
+  getBooksByTitle,
+  searchBooks,
   createBook,
   updateBook,
   deleteBook,
