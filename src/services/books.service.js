@@ -1,4 +1,5 @@
 const { Book } = require("../models/book.model");
+const { MissingFieldsError } = require("../utils/error");
 
 async function getAllBooks(page, limit) {
   const books = await Book.find()
@@ -10,7 +11,7 @@ async function getAllBooks(page, limit) {
 async function getBookById(id) {
   const book = await Book.findById(id);
   if (!book) {
-    throw new Error("book not found");
+    throw new NotFoundError("book not found");
   }
   return book;
 }
@@ -47,36 +48,30 @@ async function searchBooks(query) {
 }
 
 async function createBook({ title, author, edition, isbn, status }) {
-  // Validate input data
   if (!title || !author || !edition || !isbn || !status) {
-    throw new Error("missing required fields");
+    throw new MissingFieldsError("missing required fields");
   }
 
-  // Check if the book already exists
   const existingBook = await Book.findOne({ isbn });
   if (existingBook) {
-    throw new Error("book already exists");
+    throw new NotFoundError("book already exists");
   }
 
-  // Create and save the new book
   const newBook = new Book({ title, author, edition, isbn, status });
   const savedBook = await newBook.save();
   return savedBook;
 }
 
 async function updateBook({ id, updates }) {
-  // Validate input data
   if (!id || !updates) {
-    throw new Error("missing required fields");
+    throw new MissingFieldsError("missing required fields");
   }
 
-  // Check if the book exists
   const existingBook = await Book.findById(id);
   if (!existingBook) {
-    throw new Error("book not found");
+    throw new NotFoundError("book not found");
   }
 
-  // Update and save the book
   const updatedBook = await Book.findByIdAndUpdate(id, updates, {
     new: true,
     runValidators: true,
@@ -87,7 +82,7 @@ async function updateBook({ id, updates }) {
 async function deleteBook({ id }) {
   const deletedBook = await Book.findByIdAndDelete(id);
   if (!deletedBook) {
-    throw new Error("book not found");
+    throw new NotFoundError("book not found");
   }
   return deletedBook;
 }
