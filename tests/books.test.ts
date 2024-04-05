@@ -1,13 +1,22 @@
 const request = require("supertest");
 const app = require("../src/app");
-const { connect, disconnect } = require('../src/db/db');
+const { MongoMemoryServer } = require("mongodb-memory-server");
+
+let mongoServer;
 
 beforeAll(async () => {
-  await connect();
+  mongoServer = await MongoMemoryServer.create();
+  const mongoUri = mongoServer.getUri();
+  process.env.MONGODB_URI = mongoUri;
 });
 
 afterAll(async () => {
-  await disconnect();
+  await mongoServer.stop();
+});
+
+beforeEach(async () => {
+  const { Book } = require("../src/models/book.model");
+  await Book.deleteMany({});
 });
 
 describe("GET /books", () => {
@@ -17,15 +26,18 @@ describe("GET /books", () => {
   });
 });
 
-describe('POST /books', () => {
-  it('should create a new book', async () => {
+describe("POST /books", () => {
+  it("should create a new book", async () => {
     const bookData = {
-      title: 'Sample Book',
-      author: 'John Doe',
+      title: "Sample Book",
+      author: "John Doe",
+      edition: 1,
+      isbn: "123456",
+      status: "available",
     };
 
     const response = await request(app)
-      .post('/books')
+      .post("/books")
       .send(bookData)
       .expect(201);
 
