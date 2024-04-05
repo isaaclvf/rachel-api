@@ -1,7 +1,7 @@
 const { Book } = require("../models/book.model");
 const { MissingFieldsError } = require("../utils/error");
 
-async function getAllBooks(page, limit) {
+async function getAllBooks(page = 1, limit = 10) {
   const books = await Book.find()
     .skip((page - 1) * limit)
     .limit(limit);
