@@ -1,3 +1,5 @@
+const { MissingFieldsError } = require("./error");
+
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: "unknown endpoint" });
 };
@@ -6,7 +8,7 @@ const errorHandler = (error, req, res, next) => {
   console.error(error);
   let statusCode = 500;
 
-  if (error instanceof SyntaxError) {
+  if (error instanceof SyntaxError || error instanceof MissingFieldsError) {
     statusCode = 400;
   } else if (error instanceof ValidationError) {
     statusCode = 422;
