@@ -1,5 +1,9 @@
 const { Book } = require("../models/book.model");
-const { MissingFieldsError, NotFoundError } = require("../utils/error");
+const {
+  MissingFieldsError,
+  NotFoundError,
+  ConflictError,
+} = require("../utils/error");
 
 async function getAllBooks(page = 1, limit = 10) {
   const books = await Book.find()
@@ -19,7 +23,7 @@ async function getBookById(id) {
 async function getBookByISBN(isbn) {
   const book = await Book.find({ isbn });
   if (!book || book.length === 0) {
-    throw new NotFoundError("Book not found");
+    throw new NotFoundError("book not found");
   }
   return book;
 }
@@ -27,7 +31,7 @@ async function getBookByISBN(isbn) {
 async function getBooksByAuthor(author) {
   const books = await Book.find({ author });
   if (!books || books.length === 0) {
-    throw new NotFoundError("No books found for this author");
+    throw new NotFoundError("no books found for this author");
   }
   return books;
 }
@@ -35,7 +39,7 @@ async function getBooksByAuthor(author) {
 async function getBooksByTitle(title) {
   const books = await Book.find({ title });
   if (!books || books.length === 0) {
-    throw new NotFoundError("No books found for this author");
+    throw new NotFoundError("no books found for this title");
   }
   return books;
 }
@@ -43,7 +47,7 @@ async function getBooksByTitle(title) {
 async function getBooksByStatus(status) {
   const books = await Book.find({ status });
   if (!books || books.length === 0) {
-    throw new NotFoundError("No books found for this author");
+    throw new NotFoundError("no books found for this status");
   }
   return books;
 }
@@ -66,7 +70,7 @@ async function createBook({ title, author, edition, isbn, status }) {
 
   const existingBook = await Book.findOne({ isbn });
   if (existingBook) {
-    throw new NotFoundError("book already exists");
+    throw new ConflictError("book already exists");
   }
 
   const newBook = new Book({ title, author, edition, isbn, status });

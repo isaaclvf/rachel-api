@@ -2,6 +2,7 @@ const {
   MissingFieldsError,
   NotFoundError,
   ValidationError,
+  ConflictError,
 } = require("./error");
 
 const unknownEndpoint = (req, res) => {
@@ -18,6 +19,8 @@ const errorHandler = (error, req, res, next) => {
     statusCode = 422;
   } else if (error instanceof NotFoundError) {
     statusCode = 404;
+  } else if (error instanceof ConflictError) {
+    statusCode = 409;
   }
 
   res.status(statusCode).json({ error: error.message });

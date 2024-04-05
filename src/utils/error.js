@@ -19,8 +19,16 @@ class ValidationError extends Error {
   }
 }
 
+class ConflictError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ConflictError";
+  }
+}
+
 module.exports = {
   MissingFieldsError,
   NotFoundError,
   ValidationError,
+  ConflictError,
 };
