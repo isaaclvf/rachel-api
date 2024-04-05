@@ -1,4 +1,8 @@
-const { MissingFieldsError } = require("./error");
+const {
+  MissingFieldsError,
+  NotFoundError,
+  ValidationError,
+} = require("./error");
 
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: "unknown endpoint" });
