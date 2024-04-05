@@ -3,8 +3,18 @@ const unknownEndpoint = (req, res) => {
 };
 
 const errorHandler = (error, req, res, next) => {
-  console.log(error);
-  res.json({ error: error.message });
+  console.error(error);
+  let statusCode = 500;
+
+  if (error instanceof SyntaxError) {
+    statusCode = 400;
+  } else if (error instanceof ValidationError) {
+    statusCode = 422;
+  } else if (error instanceof NotFoundError) {
+    statusCode = 404;
+  }
+
+  res.status(statusCode).json({ error: error.message });
 };
 
 module.exports = {
