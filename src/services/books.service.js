@@ -78,8 +78,8 @@ async function createBook({ title, author, edition, isbn, status }) {
   return savedBook;
 }
 
-async function updateBook({ id, updates }) {
-  if (!id || !updates) {
+async function updateBook(id, updates) {
+  if (!id || !updates || Object.keys(updates).length === 0) {
     throw new MissingFieldsError("missing required fields");
   }
 
