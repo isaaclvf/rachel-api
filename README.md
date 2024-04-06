@@ -328,3 +328,36 @@ Request:
 ```
 
 404 Not Found - User not found
+
+### ❌ POST /user/:registration/reserve
+
+Request:
+```json
+{
+  "bookId": "book_id_here"
+}
+```
+
+200 OK:
+```json
+{
+  "message": "reservation successful"
+}
+```
+
+400 Bad Request - Missing required fields or invalid id
+
+409 Conflict - Book already reserved by someone else
+
+404 Not Found - User not found
+
+### ❌ PUT /user/:registration/loan/return/:loanId
+
+200 OK:
+```json
+{
+  "message": "loan returned successfully"
+}
+```
+
+404 Not Found - User or loan not found
