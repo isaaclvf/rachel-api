@@ -10,7 +10,6 @@ const unknownEndpoint = (req, res) => {
 };
 
 const errorHandler = (error, req, res, next) => {
-  console.error(error);
   let statusCode = 500;
 
   if (error instanceof SyntaxError || error instanceof MissingFieldsError) {
