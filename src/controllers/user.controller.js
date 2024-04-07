@@ -37,7 +37,7 @@ userRouter.put("/:registration", async (req, res, next) => {
         const filteredUpdates = Object.keys(update)
             .filter((key) => allowedFields.includes(key))
             .reduce((obj, key) => {
-                obj[key] = updates[key];
+                obj[key] = update[key];
                 return obj;
             }, {});
 
@@ -61,14 +61,7 @@ userRouter.put("/:registration", async (req, res, next) => {
 });
 
 userRouter.get("/:registration/books", async (req, res, next) => {
-    const registration = req.params.registration;
-    try {
-        const user = await userService.getUserByRegistration(registration);
-        const books = await loansService.getLoanByUserId(user.id);
-        return res.status(200).json({books: [books]});
-    } catch (error) {
-        next(error);
-    }
+    
 
 });
 
@@ -78,12 +71,35 @@ userRouter.post("/:registration/reserve", (req, res, next) => { });
 
 userRouter.get("/:registration/wishlist", (req, res, next) => { });
 
-userRouter.get("/:registration/loans", (req, res, next) => { });
+userRouter.get("/:registration/loans", async (req, res, next) => { 
+    const registration = req.params.registration;
+    try {
+        const user = await userService.getUserByRegistration(registration);
+        const loans = await loansService.getLoanByUserId(user.id);
+
+        return res.status(200).json({loans: [loans]});
+    } catch (error) {
+        next(error);
+    }
+});
 
 userRouter.post("/:registration/wishlist", (req, res, next) => { });
 
 userRouter.post("/:registration/loans", (req, res, next) => {
-
+    const bookId = req.body;
+    const registration = req.params.registration;
+    try {
+        if (!registration) {
+            return res.status(404).json("User with given registration not found");
+        }
+        if (!bookId) {
+            return res.status(400).json("Missing required fields or invalid book id");
+        }
+        
+        return res.status(200).json({message:"loan successful", userId: registration, bookId: bookId, dueDate: Date.now,});
+    } catch (error) {
+        
+    }
 });
 
 userRouter.post("/:registration/loans/renew", (req, res, next) => { });
