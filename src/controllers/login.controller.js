@@ -2,8 +2,6 @@ const { Router } = require("express");
 
 const loginRouter = Router();
 
-loginRouter.post((req, res, next) => {});
+loginRouter.post("/", (req, res, next) => {});
 
-module.exports = {
-  loginRouter,
-};
+module.exports = loginRouter;

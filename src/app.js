@@ -5,6 +5,9 @@ const logger = require("./utils/logger");
 const { connect } = require("./db/db");
 
 const booksRouter = require("./controllers/books.controller");
+const userRouter = require("./controllers/user.controller");
+const loginRouter = require("./controllers/login.controller");
+const loansRouter = require("./controllers/loans.controller");
 
 const { errorHandler, unknownEndpoint } = require("./utils/middleware");
 
@@ -20,6 +23,9 @@ app.use((req, res, next) => {
 });
 
 app.use("/books", booksRouter);
+app.use("/user", userRouter);
+app.use("/login", loginRouter);
+app.use("/loans", loansRouter);
 
 app.use(errorHandler);
 app.use(unknownEndpoint);
