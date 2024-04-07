@@ -14,7 +14,7 @@ async function getById(id) {
 async function createUser({
   id,
   registration,
-  completeName,
+  fullName,
   email,
   type,
   password,
@@ -22,7 +22,7 @@ async function createUser({
   const newUser = new User({
     id,
     registration,
-    completeName,
+    fullName,
     email,
     type,
     password,
@@ -34,14 +34,11 @@ async function deleteUserById(id) {
   return await User.findByIdAndDelete(id);
 }
 
-async function updateUser(
-  id,
-  { id, registration, completeName, email, password }
-) {
+async function updateUser(id, { id, registration, fullName, email, password }) {
   return await User.findOneAndUpdate(id, {
     id,
     registration,
-    completeName,
+    fullName,
     email,
     password,
   });

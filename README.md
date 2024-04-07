@@ -73,7 +73,7 @@ Request: GET /user/:registration
 Success - Response 200 OK
 ```json
 {
-  "username": "JohnDoe",
+  "fullName": "John Doe",
   "profilePic": "https://example.com/profile.jpg",
   "debt": 10.50,
   "loanedBooks": [
@@ -182,7 +182,7 @@ Success - Reponse 200 OK
 {
   "message": "user information updated successfully",
   "user": {
-    "username": "john_doe123",
+    "fullName": "John Doe",
     "email": "john.doe@example.com",
     "address": "New Address",
     "contact": "New Contact Info"
