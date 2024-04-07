@@ -99,7 +99,7 @@ module.exports = {
     getLoanByBookId,
     getLoanByDate,
     getLoanByReturnDate,
-    getLaonByDate,
+    getLoanByDate,
     getLoanByStatus,
     getAllLoans,
     createLoan,
