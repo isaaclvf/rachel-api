@@ -56,7 +56,7 @@ Success - Response 200 OK:
   "message": "login successful",
   "user": {
     "username": "john_doe123",
-    "email": "john.doe@example.com",
+    "registration": "123456",
     "token": "jwt_token_here"
   }
 } 
@@ -76,7 +76,7 @@ Success - Response 200 OK
   "username": "JohnDoe",
   "profilePic": "https://example.com/profile.jpg",
   "debt": 10.50,
-  "loaned_books": [
+  "loanedBooks": [
     {
       "title": "Book 1",
       "dueDate": "2024-05-01"
@@ -121,7 +121,6 @@ Request:
 ```json
 {
   "bookId": "12345",
-  "userId": "12345"
 }
 ```
 

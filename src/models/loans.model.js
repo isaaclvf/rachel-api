@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 
 const loansSchema = new mongoose.Schema({
-  id: String,
-  idUser: String,
-  idBook:String,
+  userId: String,
+  bookId: String,
   loanDate: Date,
   returnDate: Date,
-  status: String
+  status: String,
 });
 
 const Loan = mongoose.model("Loan", loansSchema);
