@@ -6,6 +6,7 @@ const loansSchema = new mongoose.Schema({
   loanDate: { type: Date, default: Date.now },
   dueDate: Date,
   status: String,
+
 });
 
 const Loan = mongoose.model("Loan", loansSchema);

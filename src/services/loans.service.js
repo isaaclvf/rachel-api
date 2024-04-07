@@ -16,7 +16,7 @@ async function getLoanById(id) {
 
 async function getLoanByUserId(userId) {
     const loan = await Loan.find({ userId });
-    if (!loan || loan.length === 0) {
+    if (!loan) {
       throw new NotFoundError("loan not found");
     }
     return loan;
@@ -24,7 +24,7 @@ async function getLoanByUserId(userId) {
 
 async function getLoanByBookId(bookId) {
     const loan = await Loan.find({ bookId });
-    if (!loan || loan.length === 0) {
+    if (!loan) {
       throw new NotFoundError("loan not found");
     }
     return loan;
@@ -32,7 +32,7 @@ async function getLoanByBookId(bookId) {
 
 async function getLoanByDate(loanDate) {
     const loan = await Loan.find({ loanDate });
-    if (!loan || loan.length === 0) {
+    if (!loan) {
       throw new NotFoundError("loan not found");
     }
     return loan;
@@ -40,7 +40,7 @@ async function getLoanByDate(loanDate) {
 
 async function getLoanByReturnDate(returnDate) {
     const loan = await Loan.find({ returnDate });
-    if (!loan || loan.length === 0) {
+    if (!loan) {
       throw new NotFoundError("loan not found");
     }
     return loan;
@@ -48,7 +48,7 @@ async function getLoanByReturnDate(returnDate) {
 
 async function getLoanByStatus(status) {
     const loan = await Loan.find({ status });
-    if (!loan || loan.length === 0) {
+    if (!loan) {
       throw new NotFoundError("loan not found");
     }
     return loan;

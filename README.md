@@ -40,7 +40,7 @@ npm test
 
 ## TODO
 
-### ❌ POST /login
+### ✔️ POST /login
 
 Request:
 ```json
@@ -66,7 +66,7 @@ Missing required fields - Reponse 400 Bad Request
 
 User not found or incorrect password - Reponse 401 Unauthorized
 
-### ❌ GET /user/:registration
+### ✔️ GET /user/:registration
 
 Request: GET /user/:registration
 
@@ -91,7 +91,7 @@ Success - Response 200 OK
 
 Not found - Response 404
 
-### ❌ GET /user/:registration/books
+### ✔️ GET /user/:registration/books
 
 Request: GET /user/:registration/books
 
