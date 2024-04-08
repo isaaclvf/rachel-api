@@ -6,6 +6,7 @@ const bookSchema = new mongoose.Schema({
   edition: String,
   isbn: String,
   status: String,
+  reservedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null }
 });
 
 const Book = mongoose.model("Book", bookSchema);
