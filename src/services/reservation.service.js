@@ -6,6 +6,7 @@ const {
     ConflictError,
 } = require("../utils/error");
 
+//busca reservas pelo ID do usuário
 async function getReservationByUserId(userId) {
     const reservation = Reservation.find({ user: userId });
     if (!reservation) {
@@ -13,6 +14,8 @@ async function getReservationByUserId(userId) {
     }
     return reservation;
 };
+
+//busca reservas pelo ID do livro
 async function getReservationByBookId(bookId) {
     const reservation = Reservation.find({ books: bookId });
     if (!reservation) {
@@ -20,6 +23,8 @@ async function getReservationByBookId(bookId) {
     }
     return reservation;
 };
+
+//busca reservas pelos IDs do usuário e do livro
 async function getReservationByUserIdAndBookId(userId, bookId) {
     const reservation = Reservation.find({ user: userId, books: bookId });
     if (!reservation) {
@@ -27,6 +32,8 @@ async function getReservationByUserIdAndBookId(userId, bookId) {
     }
     return reservation;
 };
+
+//cria uma nova reserva
 async function createReservation(userId, bookId) {
     const book = booksService.getBookById(bookId);
     if (!book || bookId) {
@@ -39,6 +46,7 @@ async function createReservation(userId, bookId) {
     return await book.save();
 };
 
+//excluir reserva
 async function deleteReservation(userId,bookId){
     const reservation = Reservation.find({ user: userId });
     if (!reservation) {
