@@ -101,7 +101,7 @@ describe("PUT /books/:id", () => {
   });
 
   afterEach(async () => {
-    await Book.deleteMany({})
+    await Book.deleteMany({});
   });
 
   it("should update a book by id", async () => {

@@ -12,8 +12,7 @@ async function getAllUsers(page = 1, limit = 10) {
   return users;
 }
 
-async function 
-getUserById(id) {
+async function getUserById(id) {
   const user = await User.findById(id);
   if (!user) {
     throw new NotFoundError("user not found");
@@ -37,16 +36,17 @@ async function getUserByRegistrationAndPassword(registration, password) {
   return user;
 }
 
-async function createUser({registration,type, password}) {
-  
+async function createUser(registration, type, password) {
   if (!registration || !password || !type) {
     throw new MissingFieldsError("missing required fields");
   }
+
   const existingUser = await User.findOne({ registration });
   if (existingUser) {
     throw new ConflictError("user already exists");
   }
-  const newUser = new User({registration,type,password});
+
+  const newUser = new User({ registration, type, password });
   return await newUser.save();
 }
 
@@ -67,7 +67,7 @@ async function updateUser(id, updates) {
   if (!existingUser) {
     throw new NotFoundError("user not found");
   }
-  
+
   const updatedUser = await User.findByIdAndUpdate(id, updates, {
     new: true,
     runValidators: true,
@@ -76,7 +76,6 @@ async function updateUser(id, updates) {
 }
 
 module.exports = {
-  
   getUserById,
   getAllUsers,
   getUserByRegistration,
