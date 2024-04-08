@@ -5,6 +5,7 @@ const {
   ConflictError,
 } = require("../utils/error");
 
+// retorna todos os livros
 async function getAllBooks(page = 1, limit = 10) {
   const books = await Book.find()
     .skip((page - 1) * limit)
@@ -12,6 +13,7 @@ async function getAllBooks(page = 1, limit = 10) {
   return books;
 }
 
+// busca livro pelo ID
 async function getBookById(id) {
   const book = await Book.findById(id);
   if (!book) {
@@ -20,6 +22,7 @@ async function getBookById(id) {
   return book;
 }
 
+// busca livro pelo ISBN
 async function getBookByISBN(isbn) {
   const book = await Book.find({ isbn });
   if (!book || book.length === 0) {
@@ -28,6 +31,7 @@ async function getBookByISBN(isbn) {
   return book;
 }
 
+// busca livro pelo autor
 async function getBooksByAuthor(author) {
   const books = await Book.find({ author });
   if (!books || books.length === 0) {
@@ -36,6 +40,7 @@ async function getBooksByAuthor(author) {
   return books;
 }
 
+// busca livro pelo título
 async function getBooksByTitle(title) {
   const books = await Book.find({ title });
   if (!books || books.length === 0) {
@@ -44,6 +49,7 @@ async function getBooksByTitle(title) {
   return books;
 }
 
+// busca livro pelo status
 async function getBooksByStatus(status) {
   const books = await Book.find({ status });
   if (!books || books.length === 0) {
@@ -52,6 +58,7 @@ async function getBooksByStatus(status) {
   return books;
 }
 
+// função de busca
 async function searchBooks(query) {
   const books = await Book.find({
     $or: [
@@ -63,6 +70,7 @@ async function searchBooks(query) {
   return books;
 }
 
+// função para criar livro
 async function createBook({ title, author, edition, isbn, status }) {
   if (!title || !author || !edition || !isbn || !status) {
     throw new MissingFieldsError("missing required fields");
@@ -78,6 +86,7 @@ async function createBook({ title, author, edition, isbn, status }) {
   return savedBook;
 }
 
+// atualizar dados de um livro
 async function updateBook(id, updates) {
   if (!id || !updates || Object.keys(updates).length === 0) {
     throw new MissingFieldsError("missing required fields");
@@ -95,6 +104,7 @@ async function updateBook(id, updates) {
   return updatedBook;
 }
 
+// deletar um livro
 async function deleteBook({ id }) {
   const deletedBook = await Book.findByIdAndDelete(id);
   if (!deletedBook) {
@@ -103,6 +113,7 @@ async function deleteBook({ id }) {
   return deletedBook;
 }
 
+// exportar funções
 module.exports = {
   getAllBooks,
   getBookById,

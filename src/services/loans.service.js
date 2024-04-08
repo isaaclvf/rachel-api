@@ -6,6 +6,7 @@ const {
     ConflictError,
   } = require("../utils/error");
 
+//busca empréstimo pelo ID
 async function getLoanById(id) {
     const loan = await Loan.findById(id);
     if (!loan) {
@@ -14,6 +15,7 @@ async function getLoanById(id) {
     return loan;
 }
 
+//busca empréstimo pelo ID do usuário
 async function getLoanByUserId(userId) {
     const loan = await Loan.find({ userId });
     if (!loan) {
@@ -22,6 +24,7 @@ async function getLoanByUserId(userId) {
     return loan;
 }
 
+//busca empréstimo pelo ID do livro
 async function getLoanByBookId(bookId) {
     const loan = await Loan.find({ bookId });
     if (!loan) {
@@ -30,6 +33,7 @@ async function getLoanByBookId(bookId) {
     return loan;
 }
 
+//busca empréstimo pela data
 async function getLoanByDate(loanDate) {
     const loan = await Loan.find({ loanDate });
     if (!loan) {
@@ -38,6 +42,7 @@ async function getLoanByDate(loanDate) {
     return loan;
 }
 
+//busca empréstimo pela data de devolução
 async function getLoanByReturnDate(returnDate) {
     const loan = await Loan.find({ returnDate });
     if (!loan) {
@@ -46,6 +51,7 @@ async function getLoanByReturnDate(returnDate) {
     return loan;
 }
 
+//busca empréstimo pelo status
 async function getLoanByStatus(status) {
     const loan = await Loan.find({ status });
     if (!loan) {
@@ -54,11 +60,13 @@ async function getLoanByStatus(status) {
     return loan;
 }
 
+//retorna todos os empréstimos
 async function getAllLoans(page = 1, limit = 10) {
     const loans = await Loan.find().skip((page - 1) * limit).limit(limit);
     return loans;
 }
 
+//cria empréstimo
 async function createLoan({userId, bookId, loanDate, returnDate, status}){
     if (!userId || !bookId || !loanDate || !returnDate || !status){
         throw new MissingFieldsError("missing required fields");
@@ -67,6 +75,7 @@ async function createLoan({userId, bookId, loanDate, returnDate, status}){
     return await newLoan.save();
 }
 
+//deleta empréstimo
 async function deleteLoanById(id){
     const deletedLoan = await Loan.findByIdAndDelete(id);
     if (!deletedLoan) {
@@ -75,6 +84,7 @@ async function deleteLoanById(id){
     return deletedLoan;
 }
 
+//atualiza dados de empréstimo
 async function updateLoan(id, updates){
     if (!id || !updates || Object.keys(updates).length === 0) {
         throw new MissingFieldsError("missing required fields");
