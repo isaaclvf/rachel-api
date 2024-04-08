@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const userService = require("../services/user.service");
+const reservationService = require("../services/reservation.service");
 const loansService = require("../services/loans.service");
 const booksService = require("../services/books.service");
 const userRouter = Router();
@@ -74,8 +75,7 @@ userRouter.get("/:registration/reserved", async (req, res, next) => {
           return res.status(404).json({ message: "User with given registration not found" });
         }
         
-        //talvez fazer um service
-        const reservations = await Reservation.find({ user: user._id }).populate("books");
+        const reservations = await reservationService.getReservationByUserId(user._id).populate("books");
     
         const reservedBooks = reservations.map((reservation) => ({
           bookId: reservation.books._id,
@@ -99,16 +99,8 @@ userRouter.post("/:registration/reserve", async (req, res, next) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        const book = booksService.getBookById(bookId);
-        if (!book || bookId) {
-            return res.status(400).json({ message: "Missing required fields or invalid id" });
-        }
-        const reservation = new Reservation({ user: user._id, books: [bookId] });
-        await reservation.save();
-
-        book.reservedBy = user._id;
-        await book.save();
-        return res.status(200).json({ message: "Reservation successful" });
+        const book = await reservationService.createReservation(user._id,bookId);
+        return res.status(200).json({ message: "Reservation successful", book });
     } catch (error) {
         next(error);
     }
@@ -144,13 +136,28 @@ userRouter.post("/:registration/loans", async (req, res, next) => {
 
         return res.status(200).json({ message: "loan successful", userId: registration, bookId: bookId, dueDate: Date.now, });
     } catch (error) {
-
+        next(error);
     }
 });
 
 userRouter.post("/:registration/loans/renew", (req, res, next) => { });
 
-userRouter.delete("/:registration/reserved/:bookId", (req, res, next) => { });
+userRouter.delete("/:registration/reserved/:bookId", async (req, res, next) => { 
+    const bookId = req.params.id;
+    try {
+        const reservations = await reservationService.getReservationByBookId(bookId);
+        if (!reservations) {
+            return res.status(404).json("reservation not found");
+        }
+        const deletedReservation = await reservationService.deleteReservation(reservations._id);
+        return res.status(200).json({ message: "deleted reservation successful", deletedReservation});
+    } catch (error) {
+        next(error);
+    }
+    
+
+
+});
 
 userRouter.delete("/:registration/wishlist/:bookId", (req, res, next) => { });
 
