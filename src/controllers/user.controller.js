@@ -3,6 +3,7 @@ const userService = require("../services/user.service");
 const reservationService = require("../services/reservation.service");
 const loansService = require("../services/loans.service");
 const booksService = require("../services/books.service");
+const { getWishlist } = require("../services/wishilit.service");
 const userRouter = Router();
 
 userRouter.get("/", (req, res, next) => { });
@@ -106,7 +107,15 @@ userRouter.post("/:registration/reserve", async (req, res, next) => {
     }
 });
 
-userRouter.get("/:registration/wishlist", (req, res, next) => { });
+userRouter.get("/:registration/wishlist", async(req, res, next) => {
+    try {
+        const bookId = req.params.bookId;
+        const wishlist = await getWishlist(bookId);
+        res.status(200).json(wishlist);
+    } catch (error) {
+        next(error);
+    }
+});
 
 userRouter.get("/:registration/loans", async (req, res, next) => {
     const registration = req.params.registration;
@@ -120,7 +129,21 @@ userRouter.get("/:registration/loans", async (req, res, next) => {
     }
 });
 
-userRouter.post("/:registration/wishlist", (req, res, next) => { });
+userRouter.post("/:registration/wishlist", async(req, res, next) => { 
+    try {
+        const registration = req.params.registration;
+        const bookId = req.body.bookId;
+        const result = await addFave(registration, bookId);
+        if (result.success) {
+            res.status(201).json({ message: result.message });
+        } else {
+            res.status(400).json({ message: result.message });
+        }
+    } catch (error) {
+        next(error);
+    }
+
+});
 
 userRouter.post("/:registration/loans", async (req, res, next) => {
     const bookId = req.body;
@@ -159,7 +182,21 @@ userRouter.delete("/:registration/reserved/:bookId", async (req, res, next) => {
 
 });
 
-userRouter.delete("/:registration/wishlist/:bookId", (req, res, next) => { });
+userRouter.delete("/:registration/wishlist/:bookId", async(req, res, next) => { 
+
+    try {
+        const registration = req.params.registration;
+        const bookId = req.params.bookId;
+        const result = await deleteFav(registration, bookId);
+        if (result.success) {
+            res.status(200).json({ message: result.message });
+        } else {
+            res.status(404).json({ message: result.message });
+        }
+    } catch (error) {
+        next(error);
+    }
+});
 
 userRouter.put("/:registration/loan/return/:loanId", (req, res, next) => { });
 

@@ -4,43 +4,53 @@ const Wishlist = require('../models/wishlist');
 const { Book } = require("../models/book.model");
 const { User } = require("../models/users.model");
 
-async function getWishlist(req, res) {
-    const wishlist = await Wishlist.findOne({user: req.user.id}).populate('books');
+async function getWishlist(bookId, res) {
+    try {
+    const wishlist = await Wishlist.findOne({Book: req.bookId}).populate('books');
     if (!wishlist) {
         res.json({ message: 'Lista de desejos não encontrada' });
-        return;
+    } else {
+        res.json(wishlist.books);
     }
-    res.json(wishlist.books);
+} catch (error) {
+    console.error('Erro ao buscar a lista de desejos:', error);
+    res.status(500).json({ message: 'Ocorreu um erro ao buscar a lista de desejos' });
+}
 }
 
-async function addFave(res, req){
-    const wishibook = await findOneById ({ user: req.user.id })
-    if (!wishibook) {
-        res.json({ message: 'Lista de desejos não encontrada' });
-        return;
+async function addFave(userId, bookId){
+    try {
+        const wishibook = await Wishlist.findOne({ user: userId });
+        if (!wishibook) {
+            return { success: false, message: 'Lista de desejos não encontrada' };
+        }
+        wishibook.Book.push(bookId);
+        await wishibook.save();
+        return { success: true, message: 'Livro adicionado à lista de desejos' };
+    } catch (error) {
+        console.error('Erro ao adicionar livro à lista de desejos:', error);
+        return { success: false, message: 'Erro ao adicionar à lista de desejos' };
     }
-    wishibook.Book.push(req.params.bookId);
-    await wishibook.save();
-        res.json({ message: 'Livro adicionado a sua lista de desejo' });
-    }
-
-async function deleteFav(req, res){
-        const wishlist = await Wishlist.findOne({user: req.user.id});
+}
+async function deleteFav(userId, bookId){
+    try {
+        const wishlist = await Wishlist.findOne({ user: userId });
         if (!wishlist) {
-            res.json({ message: 'Lista de desejos não encontrada' });
-            return;
+            return { success: false, message: 'Lista de desejos não encontrada' };
         }
-        
-        const bookindex = wishlist.books.indexOf(req.params.bookId);
+        const bookIndex = wishlist.books.indexOf(bookId);
         if (bookIndex > -1) {
-            wishlist.books.splice(bookindex, 1);
+            wishlist.books.splice(bookIndex, 1);
             await wishlist.save();
-            res.json({ message: 'Livro removido da lista de desejos' });
+            return { success: true, message: 'Livro removido da lista de desejos' };
+        } else {
+            return { success: false, message: 'Livro não encontrado na lista de desejos' };
         }
-        else{
-            res.status(404).json({ message: 'Livro não encontrado na lista de desejos' });
-        }
+    } catch (error) {
+        console.error('Erro ao excluir livro da lista de desejos:', error);
+        return { success: false, message: 'Erro ao excluir o livro' };
     }
+}
 
 module.exports = {
     getWishlist,
