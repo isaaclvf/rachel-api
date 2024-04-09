@@ -2,8 +2,8 @@ const request = require("supertest");
 const app = require("../src/app");
 
 describe("GET /books", () => {
-    it("should return status 200", async () => {
-        const response = await request(app).get("/loans");
-        expect(response.status).toBe(200);
-    });
+  it("should return status 200", async () => {
+    const response = await request(app).get("/loans");
+    expect(response.status).toBe(200);
+  });
 });

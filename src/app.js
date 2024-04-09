@@ -5,7 +5,7 @@ const logger = require("./utils/logger");
 const { connect } = require("./db/db");
 
 const booksRouter = require("./controllers/books.controller");
-const userRouter = require("./controllers/user.controller");
+const usersRouter = require("./controllers/users.controller");
 const loginRouter = require("./controllers/login.controller");
 const loansRouter = require("./controllers/loans.controller");
 
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/books", booksRouter);
-app.use("/user", userRouter);
+app.use("/users", usersRouter);
 app.use("/login", loginRouter);
 app.use("/loans", loansRouter);
 
