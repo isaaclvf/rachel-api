@@ -12,4 +12,19 @@ loansRouter.get("/", async (req, res, next) => {
   }
 });
 
+loansRouter.post("/", async (req, res, next) => {
+  try {
+    const { userId, bookId, dueDate } = req.body;
+    
+    if (!userId || !bookId || !dueDate) {
+      throw new MissingFieldsError("missing required field");
+    }
+
+    const newLoan = await Loan.create({ userId, bookId, dueDate });
+    return res.status(201).json(newLoan);
+  } catch (error) {
+    next(error)
+  }
+});
+
 module.exports = loansRouter;

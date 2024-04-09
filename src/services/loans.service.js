@@ -6,6 +6,7 @@ const {
   ConflictError,
 } = require("../utils/error");
 
+//busca empréstimo pelo ID
 async function getLoanById(id) {
   const loan = await Loan.findById(id);
   if (!loan) {
@@ -20,6 +21,7 @@ async function getLoansByUserId(userId) {
   return loans;
 }
 
+//busca empréstimo pelo ID do livro
 async function getLoanByBookId(bookId) {
   const loan = await Loan.find({ bookId });
   if (!loan) {
@@ -28,6 +30,7 @@ async function getLoanByBookId(bookId) {
   return loan;
 }
 
+//busca empréstimo pela data
 async function getLoanByDate(loanDate) {
   const loan = await Loan.find({ loanDate });
   if (!loan) {
@@ -36,6 +39,7 @@ async function getLoanByDate(loanDate) {
   return loan;
 }
 
+//busca empréstimo pela data de devolução
 async function getLoanByReturnDate(returnDate) {
   const loan = await Loan.find({ returnDate });
   if (!loan) {
@@ -44,6 +48,7 @@ async function getLoanByReturnDate(returnDate) {
   return loan;
 }
 
+//busca empréstimo pelo status
 async function getLoanByStatus(status) {
   const loan = await Loan.find({ status });
   if (!loan) {
@@ -52,6 +57,7 @@ async function getLoanByStatus(status) {
   return loan;
 }
 
+//retorna todos os empréstimos
 async function getAllLoans(page = 1, limit = 10) {
   const loans = await Loan.find()
     .skip((page - 1) * limit)
@@ -59,6 +65,13 @@ async function getAllLoans(page = 1, limit = 10) {
   return loans;
 }
 
+//cria empréstimo
+async function createLoan({userId, bookId, loanDate, returnDate, status}){
+    if (!userId || !bookId || !loanDate || !returnDate || !status){
+        throw new MissingFieldsError("missing required fields");
+    }
+    const newLoan = new Loan({id, userId, bookId, loanDate, returnDate, status});
+    return await newLoan.save();
 async function createLoan({ userId, bookId, loanDate, returnDate, status }) {
   if (!userId || !bookId || !loanDate || !returnDate || !status) {
     throw new MissingFieldsError("missing required fields");

@@ -6,6 +6,7 @@ const {
   ConflictError,
 } = require("../utils/error");
 
+//busca reservas pelo ID do usuário
 async function getReservationByUserId(userId) {
   const reservation = Reservation.find({ user: userId });
   if (!reservation) {
