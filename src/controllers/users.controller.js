@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const userService = require("../services/user.service");
+const usersService = require("../services/users.service");
 const reservationService = require("../services/reservation.service");
 const loansService = require("../services/loans.service");
 const booksService = require("../services/books.service");
@@ -8,7 +8,7 @@ const userRouter = Router();
 userRouter.get("/", async (req, res, next) => {
   try {
     const { page, limit } = req.query;
-    const users = await userService.getAllUsers(page, limit);
+    const users = await usersService.getAllUsers(page, limit);
     res.status(200).json(users);
   } catch (error) {
     next(error);
@@ -18,7 +18,7 @@ userRouter.get("/", async (req, res, next) => {
 userRouter.post("/", async (req, res, next) => {
   try {
     const { registration, type, password } = req.body;
-    const newUser = await userService.createUser(registration, type, password);
+    const newUser = await usersService.createUser(registration, type, password);
     res.status(201).json(newUser);
   } catch (error) {
     next(error);
@@ -29,7 +29,7 @@ userRouter.get("/:registration", async (req, res, next) => {
   try {
     const registration = req.params.registration;
 
-    const user = await userService.getUserByRegistration(registration);
+    const user = await usersService.getUserByRegistration(registration);
     const loans = await loansService.getLoansByUserId(user._id);
 
     return res.status(200).json({
@@ -47,17 +47,19 @@ userRouter.put("/:registration", async (req, res, next) => {
   const registration = req.params.registration;
   try {
     if (
-      !update.phone ||
-      !update.cpf ||
-      !update.email ||
-      !update.gender ||
-      !update.birthdate ||
-      !update.address
+      !(
+        update.phone ||
+        update.cpf ||
+        update.email ||
+        update.gender ||
+        update.birthdate ||
+        update.address
+      )
     ) {
       return res.status(400).json({ message: "missing required fields" });
     }
 
-    const user = await userService.getUserByRegistration(registration);
+    const user = await usersService.getUserByRegistration(registration);
 
     const allowedFields = [
       "fullName",
@@ -77,7 +79,10 @@ userRouter.put("/:registration", async (req, res, next) => {
         return obj;
       }, {});
 
-    const updatedUser = await userService.updateUser(user._id, filteredUpdates);
+    const updatedUser = await usersService.updateUser(
+      user._id,
+      filteredUpdates
+    );
 
     res.status(200).json({
       message: "user information updated successfully",
@@ -94,11 +99,11 @@ userRouter.get("/:registration/reserved", async (req, res, next) => {
   try {
     const registration = req.params;
 
-    const user = await userService.getUserByRegistration(registration);
+    const user = await usersService.getUserByRegistration(registration);
     if (!user) {
       return res
         .status(404)
-        .json({ message: "User with given registration not found" });
+        .json({ message: "user with given registration not found" });
     }
 
     const reservations = await reservationService
@@ -120,10 +125,14 @@ userRouter.get("/:registration/reserved", async (req, res, next) => {
 
 userRouter.post("/:registration/reserve", async (req, res, next) => {
   try {
-    const user = userService.getUserByRegistration(registration);
+    const registration = req.params.registration;
+    const { bookId } = req.body;
+
+    const user = await usersService.getUserByRegistration(registration);
     if (!user) {
       return res.status(404).json({ message: "user not found" });
     }
+
     const book = await reservationService.createReservation(user._id, bookId);
     return res.status(200).json({ message: "reservation successful", book });
   } catch (error) {
@@ -131,12 +140,13 @@ userRouter.post("/:registration/reserve", async (req, res, next) => {
   }
 });
 
+
 userRouter.get("/:registration/wishlist", (req, res, next) => {});
 
 userRouter.get("/:registration/loans", async (req, res, next) => {
   const registration = req.params.registration;
   try {
-    const user = await userService.getUserByRegistration(registration);
+    const user = await usersService.getUserByRegistration(registration);
     const loans = await loansService.getLoansByUserId(user._id);
 
     return res.status(200).json({ loans: [loans] });
@@ -149,7 +159,7 @@ userRouter.post("/:registration/wishlist", (req, res, next) => {});
 
 userRouter.post("/:registration/loans", async (req, res, next) => {
   try {
-    const user = await userService.getUserByRegistration(registration);
+    const user = await usersService.getUserByRegistration(registration);
     if (!user) {
       return res.status(404).json("user with given registration not found");
     }

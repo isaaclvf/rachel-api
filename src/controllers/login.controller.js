@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const userService = require("../services/user.service");
+const userService = require("../services/users.service");
 const loginRouter = Router();
 
 loginRouter.post("/", async (req, res, next) => {

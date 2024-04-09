@@ -106,21 +106,18 @@ async function getDebt(loanId) {
     throw new NotFoundError("loan not found");
   }
 
-  const { loanDate, dueDate } = existingLoan;
+  const { dueDate } = existingLoan;
+  const returnedDate = new Date();
 
-  const diffTime = Math.abs(loanDate - dueDate);  // In milliseconds
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  const returnDeadline = 15;
-
-  if (diffDays <= returnDeadline) {
+  if (returnedDate <= dueDate) {
     return 0;
   }
 
-  const dailyFine = 0.05;
-  const overdue = diffDays - returnDeadline;
+  const diffTime = Math.abs(returnedDate - dueDate);  // In milliseconds
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  const debt = overdue * dailyFine;
+  const dailyFine = 0.05;
+  const debt = diffDays * dailyFine;
 
   return debt;
 }

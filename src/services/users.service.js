@@ -30,7 +30,7 @@ async function getUserByRegistration(registration) {
 
 async function getUserByRegistrationAndPassword(registration, password) {
   const user = await User.find({ registration, password });
-  if (!user || user.length === 0) {
+  if (!user) {
     throw new NotFoundError("no user found for this registration");
   }
   return user;
