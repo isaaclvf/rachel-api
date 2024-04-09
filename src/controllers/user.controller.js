@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const userService = require("../services/user.service");
+const reservationService = require("../services/reservation.service");
 const loansService = require("../services/loans.service");
 const booksService = require("../services/books.service");
 const userRouter = Router();
@@ -77,7 +78,7 @@ userRouter.put("/:registration", async (req, res, next) => {
       }, {});
 
     const updatedUser = await userService.updateUser(user._id, filteredUpdates);
-    
+
     res.status(200).json({
       message: "user information updated successfully",
       user: updatedUser,
@@ -97,13 +98,12 @@ userRouter.get("/:registration/reserved", async (req, res, next) => {
     if (!user) {
       return res
         .status(404)
-        .json({ message: "user with given registration not found" });
+        .json({ message: "User with given registration not found" });
     }
 
-    //talvez fazer um service
-    const reservations = await Reservation.find({ user: user._id }).populate(
-      "books"
-    );
+    const reservations = await reservationService
+      .getReservationByUserId(user._id)
+      .populate("books");
 
     const reservedBooks = reservations.map((reservation) => ({
       bookId: reservation.books._id,
@@ -119,26 +119,13 @@ userRouter.get("/:registration/reserved", async (req, res, next) => {
 });
 
 userRouter.post("/:registration/reserve", async (req, res, next) => {
-  const registration = req.params;
-  const bookId = req.body;
-
   try {
     const user = userService.getUserByRegistration(registration);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "user not found" });
     }
-    const book = booksService.getBookById(bookId);
-    if (!book || bookId) {
-      return res
-        .status(400)
-        .json({ message: "missing required fields or invalid id" });
-    }
-    const reservation = new Reservation({ user: user._id, books: [bookId] });
-    await reservation.save();
-
-    book.reservedBy = user._id;
-    await book.save();
-    return res.status(200).json({ message: "reservation successful" });
+    const book = await reservationService.createReservation(user._id, bookId);
+    return res.status(200).json({ message: "reservation successful", book });
   } catch (error) {
     next(error);
   }
@@ -161,8 +148,6 @@ userRouter.get("/:registration/loans", async (req, res, next) => {
 userRouter.post("/:registration/wishlist", (req, res, next) => {});
 
 userRouter.post("/:registration/loans", async (req, res, next) => {
-  const bookId = req.body;
-  const registration = req.params.registration;
   try {
     const user = await userService.getUserByRegistration(registration);
     if (!user) {
@@ -178,12 +163,32 @@ userRouter.post("/:registration/loans", async (req, res, next) => {
       bookId: bookId,
       dueDate: Date.now,
     });
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 });
 
 userRouter.post("/:registration/loans/renew", (req, res, next) => {});
 
-userRouter.delete("/:registration/reserved/:bookId", (req, res, next) => {});
+userRouter.delete("/:registration/reserved/:bookId", async (req, res, next) => {
+  const bookId = req.params.id;
+  try {
+    const reservations = await reservationService.getReservationByBookId(
+      bookId
+    );
+    if (!reservations) {
+      return res.status(404).json("reservation not found");
+    }
+    const deletedReservation = await reservationService.deleteReservation(
+      reservations._id
+    );
+    return res
+      .status(200)
+      .json({ message: "deleted reservation successful", deletedReservation });
+  } catch (error) {
+    next(error);
+  }
+});
 
 userRouter.delete("/:registration/wishlist/:bookId", (req, res, next) => {});
 
