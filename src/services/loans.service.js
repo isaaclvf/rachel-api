@@ -66,12 +66,6 @@ async function getAllLoans(page = 1, limit = 10) {
 }
 
 //cria empréstimo
-async function createLoan({userId, bookId, loanDate, returnDate, status}){
-    if (!userId || !bookId || !loanDate || !returnDate || !status){
-        throw new MissingFieldsError("missing required fields");
-    }
-    const newLoan = new Loan({id, userId, bookId, loanDate, returnDate, status});
-    return await newLoan.save();
 async function createLoan({ userId, bookId, loanDate, returnDate, status }) {
   if (!userId || !bookId || !loanDate || !returnDate || !status) {
     throw new MissingFieldsError("missing required fields");
@@ -85,6 +79,20 @@ async function createLoan({ userId, bookId, loanDate, returnDate, status }) {
     status,
   });
   return await newLoan.save();
+  async function createLoan({ userId, bookId, loanDate, returnDate, status }) {
+    if (!userId || !bookId || !loanDate || !returnDate || !status) {
+      throw new MissingFieldsError("missing required fields");
+    }
+    const newLoan = new Loan({
+      id,
+      userId,
+      bookId,
+      loanDate,
+      returnDate,
+      status,
+    });
+    return await newLoan.save();
+  }
 }
 
 async function deleteLoanById(id) {
@@ -126,7 +134,7 @@ async function getDebt(loanId) {
     return 0;
   }
 
-  const diffTime = Math.abs(returnedDate - dueDate);  // In milliseconds
+  const diffTime = Math.abs(returnedDate - dueDate); // In milliseconds
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   const dailyFine = 0.05;
